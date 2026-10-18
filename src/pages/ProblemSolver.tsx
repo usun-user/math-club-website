@@ -8,6 +8,8 @@ import {
 } from "../services/problemNavigationService";
 import ProblemNavigation from "../components/ProblemNavigation";
 import ProgressiveHints from "../components/ProgressiveHints";
+import MathImage from "../components/MathImage";
+import MathText from "../components/MathText";
 
 interface ProblemDetails {
   id: string;
@@ -16,6 +18,7 @@ interface ProblemDetails {
   difficulty: string;
   answer_type: string;
   points: number;
+  image_path: string | null;
 }
 
 export default function ProblemSolver() {
@@ -53,7 +56,7 @@ export default function ProblemSolver() {
             supabase
               .from("problems")
               .select(
-                "id, title, question, difficulty, answer_type, points"
+                "id, title, question, difficulty, answer_type, points, image_path"
               )
               .eq("id", problemId)
               .single(),
@@ -124,8 +127,13 @@ export default function ProblemSolver() {
 
       <section>
         <h2>Question</h2>
-        <p>{problem.question}</p>
+        <MathText text={problem.question} />
       </section>
+
+      <MathImage
+        path={problem.image_path}
+        alt={'Diagram for ${problem.title}'}
+      />
 
       <ProgressiveHints
         key={problem.id}
