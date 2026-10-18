@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import MathImage from "./MathImage";
 
 interface Hint {
   id: string;
   hint_order: number;
   content: string;
+  image_path: string | null;
 }
 
 interface Props {
@@ -33,7 +35,7 @@ export default function ProgressiveHints({
       try {
         const { data, error } = await supabase
           .from("hints")
-          .select("id, hint_order, content")
+          .select("id, hint_order, content, image_path")
           .eq("problem_id", problemId)
           .order("hint_order", { ascending: true });
 
@@ -76,7 +78,13 @@ export default function ProgressiveHints({
       {hints.slice(0, revealed).map((hint) => (
         <div key={hint.id} className="hint">
           <strong>Hint {hint.hint_order}</strong>
+          
           <p>{hint.content}</p>
+
+          <MathImage
+            path={hint.image_path}
+            alt={'Diagram for hint ${hint.hint_order}'}
+          />
         </div>
       ))}
 
