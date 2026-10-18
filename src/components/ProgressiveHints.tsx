@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import MathImage from "./MathImage";
+import MathText from "./MathText";
 
 interface Hint {
   id: string;
@@ -79,7 +80,7 @@ export default function ProgressiveHints({
         <div key={hint.id} className="hint">
           <strong>Hint {hint.hint_order}</strong>
           
-          <p>{hint.content}</p>
+          <MathText text={hint.content} />
 
           <MathImage
             path={hint.image_path}

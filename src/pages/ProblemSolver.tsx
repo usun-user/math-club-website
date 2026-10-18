@@ -9,6 +9,7 @@ import {
 import ProblemNavigation from "../components/ProblemNavigation";
 import ProgressiveHints from "../components/ProgressiveHints";
 import MathImage from "../components/MathImage";
+import MathText from "../components/MathText";
 
 interface ProblemDetails {
   id: string;
@@ -126,7 +127,7 @@ export default function ProblemSolver() {
 
       <section>
         <h2>Question</h2>
-        <p>{problem.question}</p>
+        <MathText text={problem.question} />
       </section>
 
       <MathImage
