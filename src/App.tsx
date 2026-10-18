@@ -2,8 +2,7 @@ import { Routes, Route, Link } from "react-router";
 import "./App.css";
 
 import ProblemSolver from "./pages/ProblemSolver";
-import ProblemCard from "./components/ProblemCard";
-import { problems } from "./data/sampleProblems";
+import Practice from "./pages/Practice";
 
 function App() {
   return (
@@ -36,17 +35,7 @@ function App() {
         {/* Practice page */}
         <Route
           path="/practice"
-          element={
-            <main>
-              <h2>Practice Problems</h2>
-
-              {problems.map((problem) => (
-                <div key={problem.id}>
-                  <ProblemCard problem={problem} />
-                </div>
-              ))}
-            </main>
-          }
+          element={<Practice />}
         />
 
         {/* Individual problem page */}
