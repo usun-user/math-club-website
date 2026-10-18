@@ -1,0 +1,30 @@
+.practice-problems {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.practice-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: white;
+  color: #1e293b;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.practice-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.practice-card:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.practice-card h3 {
+  margin-top: 0;
+}
