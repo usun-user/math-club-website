@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import ProblemCard from "./components/ProblemCard";
 import { problems } from "./data/sampleProblems";
+import ProblemSolver from "./pages/ProblemSolver";
 
 function App() {
   const [showHint, setShowHint] = useState(false);
@@ -51,6 +52,8 @@ function App() {
       {problems.map((problem) => (
         <ProblemCard key={problem.id} problem={problem} />
       ))}
+
+      <ProblemSolver />
     </main>
   );
 }
