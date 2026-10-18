@@ -7,6 +7,7 @@ import {
   type ProblemNavigation as NavigationData,
 } from "../services/problemNavigationService";
 import ProblemNavigation from "../components/ProblemNavigation";
+import ProgressiveHints from "../components/ProgressiveHints";
 
 interface ProblemDetails {
   id: string;
@@ -125,6 +126,11 @@ export default function ProblemSolver() {
         <h2>Question</h2>
         <p>{problem.question}</p>
       </section>
+
+      <ProgressiveHints
+        key={problem.id}
+        problemId={problem.id}
+      />
 
       <section>
         <h2>Your Answer</h2>
