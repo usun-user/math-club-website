@@ -1,43 +1,160 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { supabase } from "../lib/supabase";
 import { submitAnswer } from "../services/submissionService";
+import {
+  getProblemNavigation,
+  type ProblemNavigation as NavigationData,
+} from "../services/problemNavigationService";
+import ProblemNavigation from "../components/ProblemNavigation";
 
-function ProblemSolver() {
-  const [studentAnswer, setStudentAnswer] = useState("");
+interface ProblemDetails {
+  id: string;
+  title: string;
+  question: string;
+  difficulty: string;
+  answer_type: string;
+  points: number;
+}
+
+export default function ProblemSolver() {
+  const { problemId } = useParams<{ problemId: string }>();
+
+  const [problem, setProblem] = useState<ProblemDetails | null>(null);
+  const [navigation, setNavigation] = useState<NavigationData | null>(null);
+
+  const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  // Example problem ID for testing
-  const problemId = "e269a536-49d1-46f6-b9a3-305c6eb64078";
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProblem() {
+      setLoading(true);
+      setError("");
+      setProblem(null);
+      setNavigation(null);
+      setAnswer("");
+      setFeedback("");
+
+      if (!problemId) {
+        setError("No problem selected.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const [problemResult, navigationResult] =
+          await Promise.all([
+            supabase
+              .from("problems")
+              .select(
+                "id, title, question, difficulty, answer_type, points"
+              )
+              .eq("id", problemId)
+              .single(),
+            getProblemNavigation(problemId),
+          ]);
+
+        if (problemResult.error || !problemResult.data) {
+          throw new Error("Problem not found.");
+        }
+
+        if (!navigationResult) {
+          throw new Error("Problem navigation unavailable.");
+        }
+
+        if (!cancelled) {
+          setProblem(problemResult.data);
+          setNavigation(navigationResult);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error ? err.message : "Unable to load problem."
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    void loadProblem();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [problemId]);
 
   async function handleSubmit() {
+    if (!problem || !answer.trim() || submitting) return;
+
+    setSubmitting(true);
+    setFeedback("");
+
     try {
       const result = await submitAnswer({
-        problemId,
-        answer: studentAnswer,
+        problemId: problem.id,
+        answer,
       });
 
       setFeedback(result.feedback);
     } catch {
       setFeedback("Unable to check answer. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
+  if (loading) return <p>Loading problem...</p>;
+  if (error) return <p role="alert">{error}</p>;
+  if (!problem || !navigation) return <p>Problem not found.</p>;
+
   return (
-    <div>
-      <h2>Math Problem</h2>
+    <main>
+      <h1>{problem.title}</h1>
 
-      <input
-        value={studentAnswer}
-        onChange={(e) => setStudentAnswer(e.target.value)}
-        placeholder="Enter your answer"
-      />
+      <p>
+        Difficulty: {problem.difficulty} | Points: {problem.points}
+      </p>
 
-      <button onClick={handleSubmit}>
-        Check Answer
-      </button>
+      <section>
+        <h2>Question</h2>
+        <p>{problem.question}</p>
+      </section>
 
-      <p>{feedback}</p>
-    </div>
+      <section>
+        <h2>Your Answer</h2>
+
+        {problem.answer_type === "proof" ? (
+          <textarea
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            placeholder="Write your proof..."
+            rows={8}
+          />
+        ) : (
+          <input
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            placeholder="Enter your answer"
+          />
+        )}
+
+        <button
+          onClick={() => void handleSubmit()}
+          disabled={submitting || !answer.trim()}
+        >
+          {submitting ? "Checking..." : "Check Answer"}
+        </button>
+
+        <p aria-live="polite">{feedback}</p>
+      </section>
+
+      <ProblemNavigation navigation={navigation} />
+    </main>
   );
 }
-
-export default ProblemSolver;

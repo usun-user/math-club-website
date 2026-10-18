@@ -1,60 +1,61 @@
-import { useState } from "react";
+import { Routes, Route, Link } from "react-router";
 import "./App.css";
+
+import ProblemSolver from "./pages/ProblemSolver";
 import ProblemCard from "./components/ProblemCard";
 import { problems } from "./data/sampleProblems";
-import ProblemSolver from "./pages/ProblemSolver";
 
 function App() {
-  const [showHint, setShowHint] = useState(false);
-  const [answer, setAnswer] = useState("");
-  const [feedback, setFeedback] = useState("");
-
-  function checkAnswer() {
-    if (answer.trim() === "6") {
-      setFeedback("Correct! Great job!");
-    } else {
-      setFeedback("Incorrect. Try again!");
-    }
-  }
-
   return (
-    <main>
-      <h1>Math Club Challenges</h1>
-      <p>Welcome to our interactive math club!</p>
+    <div>
+      <header>
+        <h1>Math Club Challenges</h1>
 
-      <h2>Problem 1: Algebra</h2>
-      <p>Solve for x: 2x + 6 = 18</p>
+        <nav>
+          <Link to="/">Home</Link>
+          {" | "}
+          <Link to="/practice">Practice</Link>
+        </nav>
+      </header>
 
-      <button onClick={() => setShowHint(!showHint)}>
-        {showHint ? "Hide Hint" : "Reveal Hint"}
-      </button>
-
-      {showHint && (
-        <p>Hint: Subtract 6 from both sides.</p>
-      )}
-
-      <div>
-        <input
-          type="text"
-          placeholder="Enter your answer"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+      <Routes>
+        {/* Homepage */}
+        <Route
+          path="/"
+          element={
+            <main>
+              <h2>Welcome to Math Club!</h2>
+              <p>
+                Practice math problems, reveal hints,
+                and check your answers.
+              </p>
+            </main>
+          }
         />
 
-        <button onClick={checkAnswer}>
-          Check Answer
-        </button>
-      </div>
+        {/* Practice page */}
+        <Route
+          path="/practice"
+          element={
+            <main>
+              <h2>Practice Problems</h2>
 
-      <p>{feedback}</p>
-      <h2>Practice Problems</h2>
+              {problems.map((problem) => (
+                <div key={problem.id}>
+                  <ProblemCard problem={problem} />
+                </div>
+              ))}
+            </main>
+          }
+        />
 
-      {problems.map((problem) => (
-        <ProblemCard key={problem.id} problem={problem} />
-      ))}
-
-      <ProblemSolver />
-    </main>
+        {/* Individual problem page */}
+        <Route
+          path="/problems/:problemId"
+          element={<ProblemSolver />}
+        />
+      </Routes>
+    </div>
   );
 }
 
