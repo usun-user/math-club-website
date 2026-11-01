@@ -3,6 +3,7 @@ import "./App.css";
 import ProblemSolver from "./pages/ProblemSolver";
 import Practice from "./pages/Practice";
 import Auth from "./pages/Auth";
+import MyProgress from "./pages/MyProgress";
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
           <Link to="/">Home</Link>
           {" | "}
           <Link to="/practice">Practice</Link>
+          {" | "}
+          <Link to="/progress">My Progress</Link>
           {" | "}
           <Link to="/auth">Log In / Register</Link>
         </nav>
@@ -46,7 +49,13 @@ function App() {
           element={<ProblemSolver />}
         />
 
-        {/* Account registration */}
+        {/* Progress page */}
+        <Route
+          path="/progress"
+          element={<MyProgress />}
+        />
+
+        {/* Account registration page */}
         <Route
           path="/auth"
           element={<Auth />}
