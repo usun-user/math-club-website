@@ -1,2 +1,5 @@
 [functions.submit-answer]
 verify_jwt = false
+
+[functions.reveal-hint]
+verify_jwt = false

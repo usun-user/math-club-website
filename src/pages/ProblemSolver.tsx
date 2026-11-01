@@ -128,12 +128,11 @@ export default function ProblemSolver() {
       <section>
         <h2>Question</h2>
         <MathText text={problem.question} />
+        <MathImage
+          path={problem.image_path}
+          alt={'Diagram for ${problem.title}'}
+        />
       </section>
-
-      <MathImage
-        path={problem.image_path}
-        alt={'Diagram for ${problem.title}'}
-      />
 
       <ProgressiveHints
         key={problem.id}

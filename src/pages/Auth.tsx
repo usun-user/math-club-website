@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { login, register } from "../services/authService";
+import { useNavigate } from "react-router";
+import { login, register, logout } from "../services/authService";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -39,6 +39,15 @@ export default function Auth() {
       setBusy(false);
     }
   }
+
+  async function continueAsGuest() {
+  try {
+    await logout();
+    navigate("/practice");
+  } catch {
+    setMessage("Unable to sign out. Please try again.");
+  }
+}
 
   return (
     <main>
@@ -90,7 +99,9 @@ export default function Auth() {
       </button>
 
       <p>
-        <Link to="/practice">Continue as guest</Link>
+        <button type="button" onClick={continueAsGuest}>
+          Continue as guest
+        </button>
       </p>
     </main>
   );
