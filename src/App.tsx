@@ -1,8 +1,8 @@
 import { Routes, Route, Link } from "react-router";
 import "./App.css";
-
 import ProblemSolver from "./pages/ProblemSolver";
 import Practice from "./pages/Practice";
+import Auth from "./pages/Auth";
 
 function App() {
   return (
@@ -14,6 +14,8 @@ function App() {
           <Link to="/">Home</Link>
           {" | "}
           <Link to="/practice">Practice</Link>
+          {" | "}
+          <Link to="/auth">Log In / Register</Link>
         </nav>
       </header>
 
@@ -42,6 +44,12 @@ function App() {
         <Route
           path="/problems/:problemId"
           element={<ProblemSolver />}
+        />
+
+        {/* Account registration */}
+        <Route
+          path="/auth"
+          element={<Auth />}
         />
       </Routes>
     </div>
